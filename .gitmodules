@@ -1,0 +1,3 @@
+[submodule "fpga-zynq"]
+	path = fpga-zynq
+	url = https://github.com/ucb-bar/fpga-zynq.git
