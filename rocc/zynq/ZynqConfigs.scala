@@ -8,7 +8,7 @@ import freechips.rocketchip.rocket.{RocketCoreParams, MulDivParams, DCacheParams
 import freechips.rocketchip.tile.{RocketTileParams, BuildCore, XLen}
 import testchipip._
 
-class AcceleratorConfig extends Config(new WithoutTLMonitors ++ new WithZynqAdapter ++ new WithBootROM)
+class ZynqFPGAAcceleratorConfig extends Config(new WithoutTLMonitors ++ new WithZynqAdapter ++ new WithBootROM)
 
-class ZynqFPGAMultAcceleratorConfig extends Config(new AcceleratorConfig ++ new freechips.rocketchip.system.MultAcceleratorConfig)
+class ZynqFPGAMultAcceleratorConfig extends Config(new ZynqFPGAAcceleratorConfig ++ new freechips.rocketchip.system.MultAcceleratorConfig)
 
