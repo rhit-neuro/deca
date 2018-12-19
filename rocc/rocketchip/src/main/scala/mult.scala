@@ -1,41 +1,8 @@
-// See LICENSE.SiFive for license details.
-// See LICENSE.Berkeley for license details.
-
-package freechips.rocketchip.system
+package mult
 
 import Chisel._
-//import freechips.rocketchip.config.Config
-import freechips.rocketchip.subsystem._
-//import freechips.rocketchip.devices.debug.{IncludeJtagDTM, JtagDTMKey}
-import freechips.rocketchip.diplomacy._
-import freechips.rocketchip.system._
-
-import freechips.rocketchip.config._
-import freechips.rocketchip.devices.debug._
-import freechips.rocketchip.devices.tilelink._
-import freechips.rocketchip.rocket._
 import freechips.rocketchip.tile._
-import freechips.rocketchip.tilelink._
-import freechips.rocketchip.util._
-
-//import freechips.rocketchip.util.InOrderArbiter
-
-
-class CustomAcceleratorConfig extends Config(
-  new WithCustomAccelerator ++ new DefaultConfig)
-
-
-class WithCustomAccelerator extends Config((site, here, up) => {
-      case RocketTilesKey => up(RocketTilesKey, site).map { r =>
-        r.copy(rocc = Seq(
-          RoCCParams(
-            opcodes = OpcodeSet.custom0,
-            generator = (p: Parameters) => {
-              val multiplier = LazyModule(new MultAccelerator()(p))
-              multiplier})
-          ))
-      }
-})
+import freechips.rocketchip.config._
 
 class  MultAccelerator(implicit p: Parameters) extends LazyRoCC {
   override lazy val module = new MultAcceleratorModule(this)
@@ -86,4 +53,3 @@ class MultAcceleratorModule(outer: MultAccelerator, n: Int = 4)(implicit p: Para
   io.mem.req.valid := Bool(false)
 
 }
-
