@@ -8,7 +8,10 @@ import freechips.rocketchip.rocket.{RocketCoreParams, MulDivParams, DCacheParams
 import freechips.rocketchip.tile.{RocketTileParams, BuildCore, XLen}
 import testchipip._
 
-class AcceleratorConfig extends Config(new WithoutTLMonitors ++ new WithZynqAdapter ++ new WithBootROM)
+// Use this config as a base for adding accelerators to your rocket-chip
+class ZynqFPGAAcceleratorConfig extends Config(new WithoutTLMonitors ++ new WithZynqAdapter ++ new WithBootROM)
 
-class ZynqFPGAMultAcceleratorConfig extends Config(new AcceleratorConfig ++ new freechips.rocketchip.system.MultAcceleratorConfig)
-
+// This config produces a rocket-chip for a Zynq FPGA using a custom accelerator whose config is MultAcceleratorConfig
+// Configs for other accelerators will look similar to this one e.g.
+// class YourConfig extends Config(new ZynqFPGAAcceleratorConfig ++ new freechips.rocketchip.system.YourAcceleratorConfig)
+class ZynqFPGAMultAcceleratorConfig extends Config(new ZynqFPGAAcceleratorConfig ++ new freechips.rocketchip.system.MultAcceleratorConfig)
