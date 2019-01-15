@@ -5,5 +5,5 @@ pushd ../fpga-zynq/rocket-chip/
 git apply -R ../../patches/ignore-mstatus-xs.patch
 popd
 # Undo symbolic links
-rm -f $(pwd)/../fpga-zynq/rocket-chip/accelerators
+rm -f $(pwd)/../fpga-zynq/rocket-chip/src/main/scala/accelerators
 rm -f $(pwd)/../fpga-zynq/common/src/main/scala/CustomZynqConfigs.scala
