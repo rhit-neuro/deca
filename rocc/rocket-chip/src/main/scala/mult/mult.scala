@@ -27,7 +27,7 @@ class MultAcceleratorModule(outer: MultAccelerator, n: Int = 4)(implicit p: Para
       one := cmd.bits.rs1
       two := cmd.bits.rs2
 
-      result := cmd.bits.rs1
+      result := cmd.bits.rs1 // Result is not being used currently
   }
 
   // control

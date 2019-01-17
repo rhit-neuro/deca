@@ -21,7 +21,9 @@ import freechips.rocketchip.util._
 //import freechips.rocketchip.util.InOrderArbiter
 
 import mult._
+import lutrom._
 
+// Multiply Accelerator
 class MultAcceleratorConfig extends Config(
   new WithMultAccelerator ++ new DefaultConfig)
 
@@ -34,6 +36,24 @@ class WithMultAccelerator extends Config((site, here, up) => {
             generator = (p: Parameters) => {
               val multiplier = LazyModule(new mult.MultAccelerator()(p))
               multiplier})
+          ))
+      }
+})
+
+
+// LUT ROM Accelerator
+class LUTROMAcceleratorConfig extends Config(
+  new WithLUTROMAccelerator ++ new DefaultConfig)
+
+
+class WithLUTROMAccelerator extends Config((site, here, up) => {
+      case RocketTilesKey => up(RocketTilesKey, site).map { r =>
+        r.copy(rocc = Seq(
+          RoCCParams(
+            opcodes = OpcodeSet.custom0,
+            generator = (p: Parameters) => {
+              val lutromacc = LazyModule(new lutrom.LUTROMAccelerator()(p))
+              lutromacc})
           ))
       }
 })
