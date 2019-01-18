@@ -6,6 +6,7 @@ We highly recommend using docker for your development environment.
 Follow the instructions in [rocket-chip-env](https://ada.csse.rose-hulman.edu/neuroprocessor-group/parallel-neuro-simulation/blob/master/docker/rocket-chip-env/) for setting up the docker image associated with this project.
 
 ## Getting started
+#### First time setup
 After cloning this repo, execute the following to download the `chisel` code for building a `rocket-chip`:
 ```bash
 # It is critical you run this in your docker container if you're using docker
@@ -19,9 +20,9 @@ cd scripts
 ./install-symlinks.sh
 cd ..
 ```
-
+#### Making a new accelerator
 Start with the instructions in [accelerators/](rocc/accelerators/) to make your own accelerator.
-
+#### Building a Rocket Chip
 When you're ready to build a new `rocket-chip` with your accelerator, run the following commands:
 ```bash
 make rocket CONFIG=ZynqFPGAMyAcceleratorConfig ROCKETCHIP_ADDONS=accelerators
