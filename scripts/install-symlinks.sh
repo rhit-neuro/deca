@@ -6,6 +6,6 @@ pushd ../fpga-zynq/rocket-chip/
 git apply ../../patches/ignore-mstatus-xs.patch
 popd
 # "Installs" Custom accelerator and config for custom accelerator into the rocket-chip
-ln -s $(pwd)/../rocc/rocket-chip $(pwd)/../fpga-zynq/rocket-chip/src/main/scala/accelerators
+ln -s $(pwd)/../rocc/accelerators $(pwd)/../fpga-zynq/rocket-chip/src/main/scala/accelerators
 # "Installs" Config for rocket-chip with custom accelerator for zynq boards
 ln -s $(pwd)/../rocc/zynq/ZynqConfigs.scala $(pwd)/../fpga-zynq/common/src/main/scala/CustomZynqConfigs.scala
