@@ -56,3 +56,6 @@ class WithMyAccelerator extends Config((site, here, up) => {
   - `WithMyAccelerator` - Change `MyAccelerator` while keeping the prefix `With`. Note that this name appears twice in the template.
   - `opcodes = OpcodeSet.custom0` - Change `custom0` to match up with the opcode you plan on using for your RoCC instruction that accesses your accelerator (can be `custom0` through `custom3`).
   - `val acc = LazyModule(new myaccelerator.MyAccelerator()(p))` - `acc` can be any name you want. Change `myaccelerator` to the package you declared your accelerator in. Change `MyAccelerator` to the name of your accelerator class.
+
+### Putting your accelerator on a FPGA
+Follow the instructions in [zynq](../zynq) to configure a `rocket-chip` that can be put on an FPGA with your accelerator.
