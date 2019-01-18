@@ -12,7 +12,7 @@ popd
 
 You should see `accelerators` appear as a part of `ls`'s output for the following:
 ```bash
-ls ../fpga-zynq/rocket-chip/
+ls ../fpga-zynq/rocket-chip/src/main/scala
 ```
 
 You should see `CustomZynqConfigs.scala` appear as a part of `ls`'s output for the following:
