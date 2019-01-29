@@ -5,7 +5,6 @@ package freechips.rocketchip.system
 
 import Chisel._
 //import freechips.rocketchip.config.Config
-import freechips.rocketchip.subsystem._
 //import freechips.rocketchip.devices.debug.{IncludeJtagDTM, JtagDTMKey}
 import freechips.rocketchip.diplomacy._
 import freechips.rocketchip.system._
@@ -17,7 +16,7 @@ import freechips.rocketchip.rocket._
 import freechips.rocketchip.tile._
 import freechips.rocketchip.tilelink._
 import freechips.rocketchip.util._
-
+import freechips.rocketchip.coreplex.RocketTilesKey
 //import freechips.rocketchip.util.InOrderArbiter
 
 import mult._
