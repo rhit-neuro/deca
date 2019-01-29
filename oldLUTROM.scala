@@ -13,63 +13,30 @@ class LUT_ROM extends Module{
    val io = IO(new Bundle {
            val Vmem = Input(UInt(32.W))
            val curveSelect = Input(UInt(5.W))
-	        val doLUT = Input(UInt(1.W))
+	   val doLUT = Input(UInt(1.W))
            val slope = Output(UInt(32.W))
            val offset = Output(UInt(32.W))
            val ready = Output(UInt(1.W))
    })
 
-   val comparison = RegInit(VecInit(Seq.fill(32){ 0.U(1.W) }))  //Wire(Vec(32, UInt(1.W)))
+   val comparison = Wire(Vec(32, UInt(1.W)))
    val bundle1 = Wire(new VOSBundle)
-   val xorComparison = RegInit(VecInit(Seq.fill(31){ 0.U(1.W) }))  //Wire(Vec(31, UInt(1.W)))
-   val regBelowZero = RegInit(0.U(1.W))
-
-   val subCompareReady = RegInit(0.U(1.W))
-   val xorReady = RegInit(0.U(1.W))
+   val xorComparison = Wire(Vec(31, UInt(1.W)))
    val done = RegInit(0.U(1.W))
    val addrReady = RegInit(0.U(1.W))
-   val start = RegInit(1.U(1.W))
 
-   val oldVmem = RegInit("h41200000".U(32.W))
-   val oldCurveSelect = RegInit(28.U(32.W))
-   val oldSlope = RegInit(1.U(32.W))
-   val oldOffset = RegInit(0.U(32.W))
-
-   io.slope := oldSlope
-   io.offset := oldOffset
-   io.ready := 0.U
-
-   when((start === 1.U) && (io.doLUT === 0.U)){
-         io.ready := 0.U
-         subCompareReady := 0.U
-         xorReady := 0.U	
-         addrReady := 0.U
-	      done := 0.U
-   }.elsewhen((start === 1.U) && (io.doLUT === 1.U) && ((io.Vmem =/= oldVmem) | (io.curveSelect =/= oldCurveSelect))) { 
-        subCompareReady := 1.U
-        xorReady := 0.U	
-        addrReady := 0.U
-	     done := 0.U
-        start := 0.U
-        io.ready := 0.U
-   }.elsewhen((start === 1.U) && (io.doLUT === 1.U) && (io.Vmem === oldVmem) && (io.curveSelect === oldCurveSelect)) { 
-        subCompareReady := 0.U
-        xorReady := 0.U	
-        addrReady := 0.U
-	     done := 0.U
-        io.ready := 1.U
+   when(io.doLUT){
+	done := 0.U
+	addrReady := 0.U
    }
 
    bundle1.Vmem := VecInit(Array("hbd9f91e6".U(32.W),"hbd879cc7".U(32.W),"hbd75c4a8".U(32.W),"hbd643dcd".U(32.W),"hbd56bfcb".U(32.W),"hbd4bac71".U(32.W),"hbd4230fd".U(32.W),"hbd39ce8e".U(32.W),"hbd323359".U(32.W),"hbd2b26c0".U(32.W),"hbd247cb7".U(32.W),"hbd1e0d67".U(32.W),"hbd17b203".U(32.W),"hbd113f8e".U(32.W),"hbd0a71de".U(32.W),"hbd02b1f7".U(32.W),"hbcd5bccb".U(32.W),"hbcc63cfb".U(32.W),"hbcb89f84".U(32.W),"hbcabba99".U(32.W),"hbc9f05ea".U(32.W),"hbc92274a".U(32.W),"hbc84d120".U(32.W),"hbc6d6fdb".U(32.W),"hbc4f073a".U(32.W),"hbc2d7d7c".U(32.W),"hbc078d93".U(32.W),"hbbb683b5".U(32.W),"hbb152597".U(32.W),"h3b036651".U(32.W),"h3c06a5a1".U(32.W),"h3ca328fa".U(32.W)))
    bundle1.offset := VecInit(Array("h3cae642c".U(32.W),"h3d84790c".U(32.W),"h3e01dd1a".U(32.W),"h3e5202da".U(32.W),"h3e983559".U(32.W),"h3ecd7710".U(32.W),"h3f03de2f".U(32.W),"h3f22fa1e".U(32.W),"h3f437ef6".U(32.W),"h3f64d63d".U(32.W),"h3f833198".U(32.W),"h3f93b35b".U(32.W),"h3fa38cb9".U(32.W),"h3fb23e29".U(32.W),"h3fbf2043".U(32.W),"h3fc907fb".U(32.W),"h3fc0ed1c".U(32.W),"h3fb7b2ff".U(32.W),"h3fae5bc8".U(32.W),"h3fa5636f".U(32.W),"h3f9d151e".U(32.W),"h3f95a262".U(32.W),"h3f8f2a0f".U(32.W),"h3f89bfdf".U(32.W),"h3f856af0".U(32.W),"h3f822a1b".U(32.W),"h3f7fe5eb".U(32.W),"h3f7d6473".U(32.W),"h3f7c9321".U(32.W),"h3f7d1b1e".U(32.W),"h3f7e7ba2".U(32.W),"h3f7fd567".U(32.W)))
    bundle1.slope := VecInit(Array("h3e879d0a".U(32.W),"h3f6b9431".U(32.W),"h3ffa57a8".U(32.W),"h405710cb".U(32.W),"h40a3cd36".U(32.W),"h40e6be0e".U(32.W),"h4119c77a".U(32.W),"h4144a3d7".U(32.W),"h41735c29".U(32.W),"h41929db2".U(32.W),"h41acb852".U(32.W),"h41c774bc".U(32.W),"h41e2353f".U(32.W),"h41fc1aa0".U(32.W),"h4209f5c3".U(32.W),"h4213a9fc".U(32.W),"h4209f3b6".U(32.W),"h41fc147b".U(32.W),"h41e22d0e".U(32.W),"h41c76e98".U(32.W),"h41acb021".U(32.W),"h4192978d".U(32.W),"h41734fdf".U(32.W),"h41449ba6".U(32.W),"h4119c083".U(32.W),"h40e6b368".U(32.W),"h40a3c505".U(32.W),"h405706f7".U(32.W),"h3ffa4745".U(32.W),"h3f6b8280".U(32.W),"h3e87952d".U(32.W),"h0".U(32.W)))
-   
-when(subCompareReady === 1.U){
-   val fpgtEdge = Module(new FPGreaterThan())
 
+   val fpgtEdge = Module(new FPGreaterThan())
    fpgtEdge.io.greater := bundle1.Vmem(0)
    fpgtEdge.io.lesser := io.Vmem
-   regBelowZero := fpgtEdge.io.greaterThan
 
 
    val fpgt0 = Module(new FPGreaterThan())
@@ -232,11 +199,6 @@ when(subCompareReady === 1.U){
    fpgt31.io.lesser := bundle1.Vmem(31)
    comparison(31) := fpgt31.io.greaterThan
 
-   subCompareReady := 0.U
-   xorReady := 1.U
-}
-
-when(xorReady === 1.U){
    xorComparison(0) := comparison(0) ^ comparison(1)
    xorComparison(1) := comparison(1) ^ comparison(2)
    xorComparison(2) := comparison(2) ^ comparison(3)
@@ -269,129 +231,149 @@ when(xorReady === 1.U){
    xorComparison(29) := comparison(29) ^ comparison(30)
    xorComparison(30) := comparison(30) ^ comparison(31)
 
-   xorReady := 0.U
-   addrReady := 1.U
-}
-
-val addrReg = RegInit(0.U(5.W))
-
-when(addrReady === 1.U){
+   val addrReg = RegInit(0.U(5.W))
    switch(xorComparison.asUInt){
 		is(0.U){
-			when(regBelowZero === 1.U){
+			when(fpgtEdge.io.greaterThan === 1.U){
 				addrReg := 0.U
+				addrReady := 1.U
 			}.otherwise{
 				addrReg := 31.U
+				addrReady := 1.U
 			}
 		}
 		is(1.U){
 			addrReg := 0.U
+			addrReady := 1.U
 		}
 		is(2.U){
 			addrReg := 1.U
+			addrReady := 1.U
 		}
 		is(4.U){
 			addrReg := 2.U
+			addrReady := 1.U
 		}
 		is(8.U){
 			addrReg := 3.U
+			addrReady := 1.U
 		}
 		is(16.U){
 			addrReg := 4.U
+			addrReady := 1.U
 		}
 		is(32.U){
 			addrReg := 5.U
+			addrReady := 1.U
 		}
 		is(64.U){
 			addrReg := 6.U
+			addrReady := 1.U
 		}
 		is(128.U){
 			addrReg := 7.U
+			addrReady := 1.U
 		}
 		is(256.U){
 			addrReg := 8.U
+			addrReady := 1.U
 		}
 		is(512.U){
 			addrReg := 9.U
+			addrReady := 1.U
 		}
 		is(1024.U){
 			addrReg := 10.U
+			addrReady := 1.U
 		}
 		is(2048.U){
 			addrReg := 11.U
+			addrReady := 1.U
 		}
 		is(4096.U){
 			addrReg := 12.U
+			addrReady := 1.U
 		}
 		is(8192.U){
 			addrReg := 13.U
+			addrReady := 1.U
 		}
 		is(16384.U){
 			addrReg := 14.U
+			addrReady := 1.U
 		}
 		is(32768.U){
 			addrReg := 15.U
+			addrReady := 1.U
 		}
 		is(65536.U){
 			addrReg := 16.U
+			addrReady := 1.U
 		}
 		is(131072.U){
 			addrReg := 17.U
+			addrReady := 1.U
 		}
 		is(262144.U){
 			addrReg := 18.U
+			addrReady := 1.U
 		}
 		is(524288.U){
 			addrReg := 19.U
+			addrReady := 1.U
 		}
 		is(1048576.U){
 			addrReg := 20.U
+			addrReady := 1.U
 		}
 		is(2097152.U){
 			addrReg := 21.U
+			addrReady := 1.U
 		}
 		is(4194304.U){
 			addrReg := 22.U
+			addrReady := 1.U
 		}
 		is(8388608.U){
 			addrReg := 23.U
+			addrReady := 1.U
 		}
 		is(16777216.U){
 			addrReg := 24.U
+			addrReady := 1.U
 		}
 		is(33554432.U){
 			addrReg := 25.U
+			addrReady := 1.U
 		}
 		is(67108864.U){
 			addrReg := 26.U
+			addrReady := 1.U
 		}
 		is(134217728.U){
 			addrReg := 27.U
+			addrReady := 1.U
 		}
 		is(268435456.U){
 			addrReg := 28.U
+			addrReady := 1.U
 		}
 		is(536870912.U){
 			addrReg := 29.U
+			addrReady := 1.U
 		}
 		is(1073741824.U){
 			addrReg := 30.U
+			addrReady := 1.U
 		}
 	}
-    addrReady := 0.U
-    done := 1.U
-}
 
-   when(done === 1.U ){
-	      io.slope := bundle1.slope(addrReg)
-	      io.offset := bundle1.offset(addrReg)
-         oldSlope := bundle1.slope(addrReg)
-	      oldOffset := bundle1.offset(addrReg)
-         oldVmem := io.Vmem
-	      oldCurveSelect := io.curveSelect
-         io.ready := 1.U
-         done := 0.U
-         start := 1.U
+   when(addrReady){
+	io.slope := bundle1.slope(addrReg)
+	io.offset := bundle1.offset(addrReg)
+        done := 1.U
    }
  
+   io.ready := done 
+
 }
