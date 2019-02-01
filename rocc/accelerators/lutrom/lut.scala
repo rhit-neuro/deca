@@ -14,18 +14,21 @@ class LUTROMAcceleratorModule(outer: LUTROMAccelerator, n: Int = 4)(implicit p: 
   with HasCoreParameters {
 
   val funct = io.cmd.bits.inst.funct
-  val do_LUT_offset = (funct === UInt(0))
-  val do_LUT_slope = (funct === UInt(1))
+  val do_LUT_offset = (funct === 0.U)
+  val do_LUT_slope = (funct === 1.U)
 
   val LUT = Module(new LUT_ROM())
-  
+  LUT.io.req.bits.curve_select := io.cmd.bits.rs2
+  LUT.io.req.bits.v_mem := io.cmd.bits.rs1
+
   val req_rd = Reg(io.resp.bits.rd)
+  req_rd := io.resp.bits.rd
   // Return variable
   val output = RegInit(0.U(32.W))
 
   // Setup states
-  val s_idle :: s_req_lut :: s_resp_lut :: s_resp :: Nil = Enum(Bits(), 4)
-  val state = Reg(init = s_idle)
+  val s_idle :: s_req_lut :: s_resp_lut :: s_resp :: Nil = Enum(4)
+  val state = RegInit(s_idle)
   
   // datapath
 
@@ -39,9 +42,9 @@ class LUTROMAcceleratorModule(outer: LUTROMAccelerator, n: Int = 4)(implicit p: 
       state := s_req_lut
   }
   
-  when (LUT.io.req.fire()) { state := s_req_lut }
+  when (LUT.io.req.fire()) { state := s_resp_lut }
 
-  when (state === s_resp_lut && LUT.io.resp.fire()) {
+  when (LUT.io.resp.fire()) {
     output := Mux(do_LUT_offset, LUT.io.resp.bits.offset, LUT.io.resp.bits.slope)
     state := s_resp
   }
@@ -58,6 +61,6 @@ class LUTROMAcceleratorModule(outer: LUTROMAccelerator, n: Int = 4)(implicit p: 
   io.resp.bits.data := output
 
   io.busy := (state =/= s_idle)
-  io.interrupt := Bool(false)
-  io.mem.req.valid := Bool(false)
+  io.interrupt := false.B
+  io.mem.req.valid := false.B
 }
