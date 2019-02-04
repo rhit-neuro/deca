@@ -25,6 +25,9 @@ Start with the instructions in [accelerators/](rocc/accelerators/) to make your 
 #### Building a Rocket Chip
 When you're ready to build a new `rocket-chip` with your accelerator, run the following commands:
 ```bash
+# replace ZynqFPGAMyAcceleratorConfig with the name of your config
+# if you followed the style in the README's, you'll just replace
+# MyAccelerator with the name of your accelerator
 make rocket CONFIG=ZynqFPGAMyAcceleratorConfig ROCKETCHIP_ADDONS=accelerators
 make project CONFIG=ZynqFPGAMyAcceleratorConfig ROCKETCHIP_ADDONS=accelerators
 make CONFIG=ZynqFPGAMyAcceleratorConfig ROCKETCHIP_ADDONS=accelerators

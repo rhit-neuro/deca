@@ -18,17 +18,22 @@ class LUT_ROM extends Module{
       })
    })
 
+   // Always reg inputs
+   val v_mem = Reg(UInt(32.W))
+   val curve_select = Reg(UInt(32.W))
+
    // Declare and initialize registers to keep state between states
    val comparison = RegInit(VecInit(Seq.fill(32){ 0.U(1.W) }))  //Wire(Vec(32, UInt(1.W)))
    val xor_comparison = RegInit(VecInit(Seq.fill(31){ 0.U(1.W) }))  //Wire(Vec(31, UInt(1.W)))
    val reg_below_zero = RegInit(0.U(1.W))
    val interp_index = RegInit(0.U(5.W))
-   
+
    // Declare and initialize registers for caching results when inputs don't change
-   val old_v_mem = RegInit("h41200000".U(32.W))
-   val old_curve_select = RegInit(28.U(5.W))
-   val old_slope = RegInit(1.U(32.W))
-   val old_offset = RegInit(0.U(32.W))
+   val valid_cache = RegInit(false.B)
+   val old_v_mem = Reg(UInt(32.W))
+   val old_curve_select = Reg(UInt(5.W))
+   val old_slope = Reg(UInt(32.W))
+   val old_offset = Reg(UInt(32.W))
 
    // Declare and initialize states
    val s_idle :: s_sub :: s_xor :: s_index :: s_set_o_s :: s_resp :: Nil = Enum(6)
@@ -46,13 +51,16 @@ class LUT_ROM extends Module{
    // this happens when the LUT is ready for input and the caller has indicated
    // its inputs to the LUT are valid.
    when (io.req.fire()) {
-      when ((io.req.bits.v_mem =/= old_v_mem) | (io.req.bits.curve_select =/= old_curve_select)) {
-         // When inputs change, start curve lookup process
-         state := s_sub
-      } .otherwise {
-         // When inputs don't change
-         state := s_resp
-      }
+      v_mem := io.req.bits.v_mem
+      curve_select := io.req.bits.curve_select
+      // when (!valid_cache | (io.req.bits.v_mem =/= old_v_mem) | (io.req.bits.curve_select =/= old_curve_select)) {
+      //    // When inputs change, start curve lookup process
+      //    state := s_sub
+      // } .otherwise {
+      //    // When inputs don't change
+      //    state := s_resp
+      // }
+      state := s_sub
    }
 
    // Load in hard-coded curves
@@ -63,7 +71,7 @@ class LUT_ROM extends Module{
 
    // Initialize inputs to mux for selecting what curve we look at
    val mux = Module(new LUTCurveMux28())
-   mux.io.curveSelect := io.req.bits.curve_select
+   mux.io.curveSelect := curve_select
    mux.io.curve0 := curves1.io.curve0
    mux.io.curve1 := curves1.io.curve1
    mux.io.curve2 := curves1.io.curve2
@@ -92,181 +100,181 @@ class LUT_ROM extends Module{
    mux.io.curve25 := curves2.io.curve25
    mux.io.curve26 := curves2.io.curve26
    mux.io.curve27 := curves2.io.curve27
-      
+
    // Setup curve selecting mux output
    val selected_curve = Wire(new LUTCurve())
    selected_curve := mux.io.curveOut
 
    // Parallel "subtractions" to determine which stored v_mem values are greater
-   // than and less than io.req.bits.v_mem
+   // than and less than v_mem
    when (state === s_sub) {
      val fpgtEdge = Module(new FPGreaterThan())
 
       fpgtEdge.io.greater := selected_curve.v_mem(0)
-      fpgtEdge.io.lesser := io.req.bits.v_mem
+      fpgtEdge.io.lesser := v_mem
       reg_below_zero := fpgtEdge.io.greater_than
 
 
       val fpgt0 = Module(new FPGreaterThan())
-      fpgt0.io.greater := io.req.bits.v_mem
+      fpgt0.io.greater := v_mem
       fpgt0.io.lesser := selected_curve.v_mem(0)
       comparison(0) := fpgt0.io.greater_than
 
       val fpgt1 = Module(new FPGreaterThan())
-      fpgt1.io.greater := io.req.bits.v_mem
+      fpgt1.io.greater := v_mem
       fpgt1.io.lesser := selected_curve.v_mem(1)
       comparison(1) := fpgt1.io.greater_than
 
       val fpgt2 = Module(new FPGreaterThan())
-      fpgt2.io.greater := io.req.bits.v_mem
+      fpgt2.io.greater := v_mem
       fpgt2.io.lesser := selected_curve.v_mem(2)
       comparison(2) := fpgt2.io.greater_than
 
       val fpgt3 = Module(new FPGreaterThan())
-      fpgt3.io.greater := io.req.bits.v_mem
+      fpgt3.io.greater := v_mem
       fpgt3.io.lesser := selected_curve.v_mem(3)
       comparison(3) := fpgt3.io.greater_than
 
       val fpgt4 = Module(new FPGreaterThan())
-      fpgt4.io.greater := io.req.bits.v_mem
+      fpgt4.io.greater := v_mem
       fpgt4.io.lesser := selected_curve.v_mem(4)
       comparison(4) := fpgt4.io.greater_than
 
       val fpgt5 = Module(new FPGreaterThan())
-      fpgt5.io.greater := io.req.bits.v_mem
+      fpgt5.io.greater := v_mem
       fpgt5.io.lesser := selected_curve.v_mem(5)
       comparison(5) := fpgt5.io.greater_than
 
       val fpgt6 = Module(new FPGreaterThan())
-      fpgt6.io.greater := io.req.bits.v_mem
+      fpgt6.io.greater := v_mem
       fpgt6.io.lesser := selected_curve.v_mem(6)
       comparison(6) := fpgt6.io.greater_than
 
       val fpgt7 = Module(new FPGreaterThan())
-      fpgt7.io.greater := io.req.bits.v_mem
+      fpgt7.io.greater := v_mem
       fpgt7.io.lesser := selected_curve.v_mem(7)
       comparison(7) := fpgt7.io.greater_than
 
       val fpgt8 = Module(new FPGreaterThan())
-      fpgt8.io.greater := io.req.bits.v_mem
+      fpgt8.io.greater := v_mem
       fpgt8.io.lesser := selected_curve.v_mem(8)
       comparison(8) := fpgt8.io.greater_than
 
       val fpgt9 = Module(new FPGreaterThan())
-      fpgt9.io.greater := io.req.bits.v_mem
+      fpgt9.io.greater := v_mem
       fpgt9.io.lesser := selected_curve.v_mem(9)
       comparison(9) := fpgt9.io.greater_than
 
       val fpgt10 = Module(new FPGreaterThan())
-      fpgt10.io.greater := io.req.bits.v_mem
+      fpgt10.io.greater := v_mem
       fpgt10.io.lesser := selected_curve.v_mem(10)
       comparison(10) := fpgt10.io.greater_than
 
       val fpgt11 = Module(new FPGreaterThan())
-      fpgt11.io.greater := io.req.bits.v_mem
+      fpgt11.io.greater := v_mem
       fpgt11.io.lesser := selected_curve.v_mem(11)
       comparison(11) := fpgt11.io.greater_than
 
       val fpgt12 = Module(new FPGreaterThan())
-      fpgt12.io.greater := io.req.bits.v_mem
+      fpgt12.io.greater := v_mem
       fpgt12.io.lesser := selected_curve.v_mem(12)
       comparison(12) := fpgt12.io.greater_than
 
       val fpgt13 = Module(new FPGreaterThan())
-      fpgt13.io.greater := io.req.bits.v_mem
+      fpgt13.io.greater := v_mem
       fpgt13.io.lesser := selected_curve.v_mem(13)
       comparison(13) := fpgt13.io.greater_than
 
       val fpgt14 = Module(new FPGreaterThan())
-      fpgt14.io.greater := io.req.bits.v_mem
+      fpgt14.io.greater := v_mem
       fpgt14.io.lesser := selected_curve.v_mem(14)
       comparison(14) := fpgt14.io.greater_than
 
       val fpgt15 = Module(new FPGreaterThan())
-      fpgt15.io.greater := io.req.bits.v_mem
+      fpgt15.io.greater := v_mem
       fpgt15.io.lesser := selected_curve.v_mem(15)
       comparison(15) := fpgt15.io.greater_than
 
       val fpgt16 = Module(new FPGreaterThan())
-      fpgt16.io.greater := io.req.bits.v_mem
+      fpgt16.io.greater := v_mem
       fpgt16.io.lesser := selected_curve.v_mem(16)
       comparison(16) := fpgt16.io.greater_than
 
       val fpgt17 = Module(new FPGreaterThan())
-      fpgt17.io.greater := io.req.bits.v_mem
+      fpgt17.io.greater := v_mem
       fpgt17.io.lesser := selected_curve.v_mem(17)
       comparison(17) := fpgt17.io.greater_than
 
       val fpgt18 = Module(new FPGreaterThan())
-      fpgt18.io.greater := io.req.bits.v_mem
+      fpgt18.io.greater := v_mem
       fpgt18.io.lesser := selected_curve.v_mem(18)
       comparison(18) := fpgt18.io.greater_than
 
       val fpgt19 = Module(new FPGreaterThan())
-      fpgt19.io.greater := io.req.bits.v_mem
+      fpgt19.io.greater := v_mem
       fpgt19.io.lesser := selected_curve.v_mem(19)
       comparison(19) := fpgt19.io.greater_than
 
       val fpgt20 = Module(new FPGreaterThan())
-      fpgt20.io.greater := io.req.bits.v_mem
+      fpgt20.io.greater := v_mem
       fpgt20.io.lesser := selected_curve.v_mem(20)
       comparison(20) := fpgt20.io.greater_than
 
       val fpgt21 = Module(new FPGreaterThan())
-      fpgt21.io.greater := io.req.bits.v_mem
+      fpgt21.io.greater := v_mem
       fpgt21.io.lesser := selected_curve.v_mem(21)
       comparison(21) := fpgt21.io.greater_than
 
       val fpgt22 = Module(new FPGreaterThan())
-      fpgt22.io.greater := io.req.bits.v_mem
+      fpgt22.io.greater := v_mem
       fpgt22.io.lesser := selected_curve.v_mem(22)
       comparison(22) := fpgt22.io.greater_than
 
       val fpgt23 = Module(new FPGreaterThan())
-      fpgt23.io.greater := io.req.bits.v_mem
+      fpgt23.io.greater := v_mem
       fpgt23.io.lesser := selected_curve.v_mem(23)
       comparison(23) := fpgt23.io.greater_than
 
       val fpgt24 = Module(new FPGreaterThan())
-      fpgt24.io.greater := io.req.bits.v_mem
+      fpgt24.io.greater := v_mem
       fpgt24.io.lesser := selected_curve.v_mem(24)
       comparison(24) := fpgt24.io.greater_than
 
       val fpgt25 = Module(new FPGreaterThan())
-      fpgt25.io.greater := io.req.bits.v_mem
+      fpgt25.io.greater := v_mem
       fpgt25.io.lesser := selected_curve.v_mem(25)
       comparison(25) := fpgt25.io.greater_than
 
       val fpgt26 = Module(new FPGreaterThan())
-      fpgt26.io.greater := io.req.bits.v_mem
+      fpgt26.io.greater := v_mem
       fpgt26.io.lesser := selected_curve.v_mem(26)
       comparison(26) := fpgt26.io.greater_than
 
       val fpgt27 = Module(new FPGreaterThan())
-      fpgt27.io.greater := io.req.bits.v_mem
+      fpgt27.io.greater := v_mem
       fpgt27.io.lesser := selected_curve.v_mem(27)
       comparison(27) := fpgt27.io.greater_than
 
       val fpgt28 = Module(new FPGreaterThan())
-      fpgt28.io.greater := io.req.bits.v_mem
+      fpgt28.io.greater := v_mem
       fpgt28.io.lesser := selected_curve.v_mem(28)
       comparison(28) := fpgt28.io.greater_than
 
       val fpgt29 = Module(new FPGreaterThan())
-      fpgt29.io.greater := io.req.bits.v_mem
+      fpgt29.io.greater := v_mem
       fpgt29.io.lesser := selected_curve.v_mem(29)
       comparison(29) := fpgt29.io.greater_than
 
       val fpgt30 = Module(new FPGreaterThan())
-      fpgt30.io.greater := io.req.bits.v_mem
+      fpgt30.io.greater := v_mem
       fpgt30.io.lesser := selected_curve.v_mem(30)
       comparison(30) := fpgt30.io.greater_than
 
       val fpgt31 = Module(new FPGreaterThan())
-      fpgt31.io.greater := io.req.bits.v_mem
+      fpgt31.io.greater := v_mem
       fpgt31.io.lesser := selected_curve.v_mem(31)
       comparison(31) := fpgt31.io.greater_than
-      
+
       state := s_xor
    }
 
@@ -412,16 +420,18 @@ class LUT_ROM extends Module{
             interp_index := 30.U
          }
       }
-      
+
       state := s_set_o_s
    }
 
    // Set outputs based on interp_index
+   // Might be able to merge with s_set_o_s
    when (state === s_set_o_s) {
+      valid_cache := true.B
       old_slope := selected_curve.slope(interp_index)
       old_offset := selected_curve.offset(interp_index)
-      old_v_mem := io.req.bits.v_mem
-      old_curve_select := io.req.bits.curve_select
+      old_v_mem := v_mem
+      old_curve_select := curve_select
 
       state := s_resp
    }
@@ -431,5 +441,5 @@ class LUT_ROM extends Module{
    when (io.resp.fire()) {
       state := s_idle
    }
- 
+
 }

@@ -12,36 +12,39 @@ class  LUTROMAccelerator(implicit p: Parameters) extends LazyRoCC {
 
 class LUTROMAcceleratorModule(outer: LUTROMAccelerator, n: Int = 4)(implicit p: Parameters) extends LazyRoCCModule(outer)
   with HasCoreParameters {
+  // Always reg inputs
+  val funct = RegInit(0.U(5.W))
+  val v_mem = Reg(UInt(32.W))
+  val curve_select = Reg(UInt(32.W))
+  val req_rd = Reg(io.cmd.bits.inst.rd)
 
-  val funct = io.cmd.bits.inst.funct
   val do_LUT_offset = (funct === 0.U)
   val do_LUT_slope = (funct === 1.U)
 
+  // initialize LUT
   val LUT = Module(new LUT_ROM())
-  LUT.io.req.bits.curve_select := io.cmd.bits.rs2
-  LUT.io.req.bits.v_mem := io.cmd.bits.rs1
+  LUT.io.req.bits.curve_select := curve_select
+  LUT.io.req.bits.v_mem := v_mem
 
-  val req_rd = Reg(io.resp.bits.rd)
-  req_rd := io.resp.bits.rd
   // Return variable
   val output = RegInit(0.U(32.W))
 
   // Setup states
   val s_idle :: s_req_lut :: s_resp_lut :: s_resp :: Nil = Enum(4)
   val state = RegInit(s_idle)
-  
-  // datapath
 
   // When we get a command, start the LUT and
   // move to the s_req_lut state, waiting for the
   // LUT to finish
   when (io.cmd.fire()){
-      LUT.io.req.bits.v_mem := io.cmd.bits.rs1
-      LUT.io.req.bits.curve_select := io.cmd.bits.rs2
+      // io.cmd only has the right values in this block
+      v_mem := io.cmd.bits.rs1
+      curve_select := io.cmd.bits.rs2
+      funct := io.cmd.bits.inst.funct
       req_rd := io.cmd.bits.inst.rd
       state := s_req_lut
   }
-  
+
   when (LUT.io.req.fire()) { state := s_resp_lut }
 
   when (LUT.io.resp.fire()) {
@@ -50,7 +53,7 @@ class LUTROMAcceleratorModule(outer: LUTROMAccelerator, n: Int = 4)(implicit p: 
   }
 
   when (io.resp.fire()) { state := s_idle }
-  
+
   LUT.io.req.valid := (state === s_req_lut)
   LUT.io.resp.ready := (state === s_resp_lut)
 
@@ -59,6 +62,8 @@ class LUTROMAcceleratorModule(outer: LUTROMAccelerator, n: Int = 4)(implicit p: 
   io.resp.valid := (state === s_resp)
   io.resp.bits.rd := req_rd
   io.resp.bits.data := output
+  // NEVER have the following, it results in the processor stalling
+  // io.resp.bits.rd := io.cmd.bits.inst.rd
 
   io.busy := (state =/= s_idle)
   io.interrupt := false.B

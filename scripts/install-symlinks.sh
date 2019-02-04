@@ -3,7 +3,7 @@
 # instructions (e.g. custom0) to run without modifying pk (proxy kernel)
 # or a linux kernel
 pushd ../fpga-zynq/rocket-chip/
-git apply ../../patches/ignore-mstatus-xs.patch
+git apply ../../patches/*.patch
 popd
 # "Installs" Custom accelerator and config for custom accelerator into the rocket-chip
 ln -s $(pwd)/../rocc/accelerators $(pwd)/../fpga-zynq/rocket-chip/src/main/scala/accelerators
