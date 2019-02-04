@@ -1,7 +1,7 @@
-diff --git src/main/scala/rocket/RocketCore.scala src/main/scala/rocket/RocketCore.scala
+diff --git a/src/main/scala/rocket/RocketCore.scala b/src/main/scala/rocket/RocketCore.scala
 index 460e25f7..0d7bc7bb 100644
---- src/main/scala/rocket/RocketCore.scala
-+++ src/main/scala/rocket/RocketCore.scala
+--- a/src/main/scala/rocket/RocketCore.scala
++++ b/src/main/scala/rocket/RocketCore.scala
 @@ -24,7 +24,7 @@ case class RocketCoreParams(
    nLocalInterrupts: Int = 0,
    nBreakpoints: Int = 1,
