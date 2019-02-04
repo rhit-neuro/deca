@@ -22,6 +22,7 @@ import freechips.rocketchip.util._
 
 import mult._
 import lutrom._
+import multState._
 
 // Multiply Accelerator
 class MultAcceleratorConfig extends Config(
@@ -54,6 +55,22 @@ class WithLUTROMAccelerator extends Config((site, here, up) => {
             generator = (p: Parameters) => {
               val lutromacc = LazyModule(new lutrom.LUTROMAccelerator()(p))
               lutromacc})
+          ))
+      }
+})
+
+// Multiply State Accelerator
+class MultStateAcceleratorConfig extends Config(
+  new WithMultStateAccelerator ++ new DefaultConfig)
+
+class WithMultStateAccelerator extends Config((site, here, up) => {
+      case RocketTilesKey => up(RocketTilesKey, site).map { r =>
+        r.copy(rocc = Seq(
+          RoCCParams(
+            opcodes = OpcodeSet.custom0,
+            generator = (p: Parameters) => {
+              val multiplierState = LazyModule(new multState.MultStateAccelerator()(p))
+              multiplierState})
           ))
       }
 })
