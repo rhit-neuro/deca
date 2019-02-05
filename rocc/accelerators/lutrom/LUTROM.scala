@@ -25,13 +25,14 @@ class LUT_ROM extends Module{
    // Declare and initialize registers to keep state between states
    val comparison = RegInit(VecInit(Seq.fill(32){ 0.U(1.W) }))  //Wire(Vec(32, UInt(1.W)))
    val xor_comparison = RegInit(VecInit(Seq.fill(31){ 0.U(1.W) }))  //Wire(Vec(31, UInt(1.W)))
-   val reg_below_zero = RegInit(0.U(1.W))
+   val greater_than_all = RegInit(false.B)
    val interp_index = RegInit(0.U(5.W))
 
    // Declare and initialize registers for caching results when inputs don't change
    val valid_cache = RegInit(false.B)
-   val old_v_mem = Reg(UInt(32.W))
-   val old_curve_select = Reg(UInt(5.W))
+   // Make sure old_v_mem and old_curve_select are values we don't expect to ever see
+   val old_v_mem = RegInit("h41200000".U(32.W))
+   val old_curve_select = RegInit(28.U(5.W))
    val old_slope = Reg(UInt(32.W))
    val old_offset = Reg(UInt(32.W))
 
@@ -109,13 +110,6 @@ class LUT_ROM extends Module{
    // Parallel "subtractions" to determine which stored v_mem values are greater
    // than and less than io.req.bits.v_mem
    when (state === s_sub) {
-     val fpgtEdge = Module(new FPGreaterThan())
-
-      fpgtEdge.io.greater := selected_curve.v_mem(0)
-      fpgtEdge.io.lesser := io.req.bits.v_mem
-      reg_below_zero := fpgtEdge.io.greater_than
-
-
       val fpgt0 = Module(new FPGreaterThan())
       fpgt0.io.greater := io.req.bits.v_mem
       fpgt0.io.lesser := selected_curve.v_mem(0)
@@ -313,7 +307,7 @@ class LUT_ROM extends Module{
       xor_comparison(28) := comparison(28) ^ comparison(29)
       xor_comparison(29) := comparison(29) ^ comparison(30)
       xor_comparison(30) := comparison(30) ^ comparison(31)
-
+      greater_than_all := (comparison(31) === 1.U)
       state := s_index
    }
 
@@ -321,10 +315,10 @@ class LUT_ROM extends Module{
    when (state === s_index) {
       switch(xor_comparison.asUInt){
          is(0.U){
-            when(reg_below_zero === 1.U){
-               interp_index := 0.U
-            }.otherwise{
+            when(greater_than_all){
                interp_index := 31.U
+            }.otherwise{
+               interp_index := 0.U
             }
          }
          is(1.U){
