@@ -12,10 +12,10 @@ ln -s $(pwd)/../custom_tests/macros/custom $(pwd)/../fpga-zynq/rocket-chip/riscv
 # make all - compiles our test program
 # undo the patch
 pushd ../fpga-zynq/rocket-chip/riscv-tools/riscv-tests/isa/
-git apply ../../../../../custom_tests/*.patch
+git apply ../../../../../custom_tests/mult_tests.patch
 make clean
 make all
-git apply -R ../../../../../custom_tests/*.patch
+git apply -R ../../../../../custom_tests/mult_tests.patch
 popd
 
 # Make the directory output if it does not already exists

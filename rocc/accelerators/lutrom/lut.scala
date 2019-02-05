@@ -54,6 +54,9 @@ class LUTROMAcceleratorModule(outer: LUTROMAccelerator, n: Int = 4)(implicit p: 
 
   when (io.resp.fire()) { state := s_idle }
 
+  printf("cmd: ready %d   valid %d -- resp:  ready %d  valid %d -- v:%x c:%x output:%x\n",
+      io.cmd.ready, io.cmd.valid, io.resp.ready, io.resp.valid, io.cmd.bits.rs1, io.cmd.bits.rs2, io.resp.bits.data)
+
   LUT.io.req.valid := (state === s_req_lut)
   LUT.io.resp.ready := (state === s_resp_lut)
 

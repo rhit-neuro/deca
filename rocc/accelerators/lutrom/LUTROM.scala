@@ -18,6 +18,9 @@ class LUT_ROM extends Module{
       })
    })
 
+   printf("req: ready %d   valid %d -- resp:  ready %d  valid %d --v:%x c:%x => o:%x s:%x\n",
+      io.req.ready, io.req.valid, io.resp.ready, io.resp.valid, io.req.bits.v_mem, io.req.bits.curve_select, io.resp.bits.offset, io.resp.bits.slope)
+
    // // Always reg inputs
    // val v_mem = Reg(UInt(32.W))
    // val curve_select = Reg(UInt(32.W))
