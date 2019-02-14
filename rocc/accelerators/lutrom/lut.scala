@@ -17,9 +17,12 @@ class LUTROMAcceleratorModule(outer: LUTROMAccelerator, n: Int = 4)(implicit p: 
   val v_mem = Reg(UInt(32.W))
   val curve_select = Reg(UInt(32.W))
   val req_rd = Reg(io.cmd.bits.inst.rd)
+  val call_count = Reg(UInt(64.W))
 
   val do_LUT_offset = (funct === 0.U)
   val do_LUT_slope = (funct === 1.U)
+  val do_reset_count = (funct === 2.U)
+  val do_get_count = (funct === 3.U)
 
   // initialize LUT
   val LUT = Module(new LUT_ROM())
@@ -30,7 +33,7 @@ class LUTROMAcceleratorModule(outer: LUTROMAccelerator, n: Int = 4)(implicit p: 
   val output = RegInit(0.U(32.W))
 
   // Setup states
-  val s_idle :: s_req_lut :: s_resp_lut :: s_resp :: Nil = Enum(4)
+  val s_idle :: s_req_lut :: s_resp_lut :: s_resp_count :: s_resp :: Nil = Enum(5)
   val state = RegInit(s_idle)
 
   // When we get a command, start the LUT and
@@ -42,13 +45,27 @@ class LUTROMAcceleratorModule(outer: LUTROMAccelerator, n: Int = 4)(implicit p: 
       curve_select := io.cmd.bits.rs2
       funct := io.cmd.bits.inst.funct
       req_rd := io.cmd.bits.inst.rd
-      state := s_req_lut
+      when (io.cmd.bits.inst.funct === 2.U) {
+        call_count := 0.U
+        state := s_resp_count
+      } .elsewhen (io.cmd.bits.inst.funct === 3.U) {
+        state := s_resp_count
+      } .otherwise {
+        call_count := call_count + 1.U
+        state := s_req_lut
+      }
+
   }
 
   when (LUT.io.req.fire()) { state := s_resp_lut }
 
   when (LUT.io.resp.fire()) {
     output := Mux(do_LUT_offset, LUT.io.resp.bits.offset, LUT.io.resp.bits.slope)
+    state := s_resp
+  }
+
+  when (state === s_resp_count) {
+    output := call_count
     state := s_resp
   }
 
