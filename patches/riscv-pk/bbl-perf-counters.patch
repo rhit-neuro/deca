@@ -1,0 +1,42 @@
+diff --git a/machine/minit.c b/machine/minit.c
+index 47433d1..ca1ff87 100644
+--- a/machine/minit.c
++++ b/machine/minit.c
+@@ -28,6 +28,37 @@ static void mstatus_init()
+     write_csr(scounteren, -1);
+   write_csr(mcounteren, -1);
+ 
++  // Set the HPM event selectors as desired for your specific micro-architecture
++  write_csr(mhpmevent3,     0b00000000000000000000000100000000);
++  write_csr(mhpmevent4,     0b00000000000000000000001000000000);
++  write_csr(mhpmevent5,     0b00000000000000000000010000000000);
++  write_csr(mhpmevent6,     0b00000000000000000000100000000000);
++  write_csr(mhpmevent7,     0b00000000000000000001000000000000);
++  write_csr(mhpmevent8,     0b00000000000000000010000000000000);
++  write_csr(mhpmevent9,     0b00000000000000000100000000000000);
++  write_csr(mhpmevent10,    0b00000000000000001000000000000000);
++  write_csr(mhpmevent11,    0b00000000000000010000000000000000);
++  write_csr(mhpmevent12,    0b00000000000000100000000000000000);
++  write_csr(mhpmevent13,    0b00000000000001000000000000000000);
++  write_csr(mhpmevent14,    0b00000000000110000000000000000000);
++  write_csr(mhpmevent15,    0b00000011111000000000000000000000);
++  write_csr(mhpmevent16,    0b00000000000000000000000100000001);
++  write_csr(mhpmevent17,    0b00000000000000000000001000000001);
++  write_csr(mhpmevent18,    0b00000000000000000000010000000001);
++  write_csr(mhpmevent19,    0b00000000000000000000100000000001);
++  write_csr(mhpmevent20,    0b00000000000000000001000000000001);
++  write_csr(mhpmevent21,    0b00000000000000000010000000000001);
++  write_csr(mhpmevent22,    0b00000000000000000100000000000001);
++  write_csr(mhpmevent23,    0b00000000000000001000000000000001);
++  write_csr(mhpmevent24,    0b00000000000000010000000000000001);
++  write_csr(mhpmevent25,    0b00000000000000100000000000000001);
++  write_csr(mhpmevent26,    0b00000000000001000000000000000001);
++  write_csr(mhpmevent27,    0b00000000000000000000000100000010);
++  write_csr(mhpmevent28,    0b00000000000000000000001000000010);
++  write_csr(mhpmevent29,    0b00000000000000000000010000000010);
++  write_csr(mhpmevent30,    0b00000000000000000000100000000010);
++  write_csr(mhpmevent31,    0b00000000000000000001000000000010);
++
+   // Enable software interrupts
+   write_csr(mie, MIP_MSIP);
+ 
