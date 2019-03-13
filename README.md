@@ -46,5 +46,5 @@ cd ..
 ```
 If you want to change what events are counted, edit `firesim-software/riscv-pk/machine/minit.c` then change to the firesim-software directory and run:
 ```bash
-machine/minit.c
+./sw-manager -c br-disk.json build
 ```
