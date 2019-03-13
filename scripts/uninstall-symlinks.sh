@@ -2,7 +2,7 @@
 # Undoes the work done by install-symlinks.sh
 # Undo rocket-chip patch
 pushd ../fpga-zynq/rocket-chip/
-git apply -R ../../patches/ignore-mstatus-xs.patch
+git apply -R ../../patches/rocket-chip/*.patch
 popd
 # Undo symbolic links
 rm -f $(pwd)/../fpga-zynq/rocket-chip/src/main/scala/accelerators

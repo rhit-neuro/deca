@@ -1,0 +1,13 @@
+diff --git a/src/main/scala/rocket/RocketCore.scala b/src/main/scala/rocket/RocketCore.scala
+index 460e25f7..0d7bc7bb 100644
+--- a/src/main/scala/rocket/RocketCore.scala
++++ b/src/main/scala/rocket/RocketCore.scala
+@@ -24,7 +24,7 @@ case class RocketCoreParams(
+   nLocalInterrupts: Int = 0,
+   nBreakpoints: Int = 1,
+   nPMPs: Int = 8,
+-  nPerfCounters: Int = 0,
++  nPerfCounters: Int = 29,
+   haveBasicCounters: Boolean = true,
+   misaWritable: Boolean = true,
+   nL2TLBEntries: Int = 0,

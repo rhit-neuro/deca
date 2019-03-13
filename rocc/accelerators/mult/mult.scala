@@ -28,9 +28,19 @@ class MultAcceleratorModule(outer: MultAccelerator, n: Int = 4)(implicit p: Para
       two := cmd.bits.rs2
 
       result := cmd.bits.rs1 // Result is not being used currently
+      printf("command fired\n")
+      printf("rs1: %d, rs2: %d\n",cmd.bits.rs1,cmd.bits.rs2)
   }
 
   // control
+  when (io.resp.fire()){
+    printf("response fired\n")
+    printf("rs1: %d, rs2: %d\n",cmd.bits.rs1,cmd.bits.rs2)
+    printf("result: %d\n", io.resp.bits.data)
+  }
+
+  printf("cmd: ready %d   valid %d -- resp:  ready %d  valid %d -- %d * %d = %d\n",
+      cmd.ready, cmd.valid, io.resp.ready, io.resp.valid, cmd.bits.rs1, cmd.bits.rs2, io.resp.bits.data)
 
   val doResp = cmd.bits.inst.xd
   val stallResp = doResp && !io.resp.ready

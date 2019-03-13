@@ -12,104 +12,80 @@ class  LUTROMAccelerator(implicit p: Parameters) extends LazyRoCC {
 
 class LUTROMAcceleratorModule(outer: LUTROMAccelerator, n: Int = 4)(implicit p: Parameters) extends LazyRoCCModule(outer)
   with HasCoreParameters {
+  // Always reg inputs
+  val funct = RegInit(0.U(5.W))
+  val v_mem = Reg(UInt(32.W))
+  val curve_select = Reg(UInt(32.W))
+  val req_rd = Reg(io.cmd.bits.inst.rd)
+  val call_count = Reg(UInt(64.W))
 
-  val busy = Reg(init = Vec.fill(n){Bool(false)})
+  val do_LUT_offset = (funct === 0.U)
+  val do_LUT_slope = (funct === 1.U)
+  val do_reset_count = (funct === 2.U)
+  val do_get_count = (funct === 3.U)
 
-  val cmd = Queue(io.cmd)
-  val funct = cmd.bits.inst.funct
-  val doLUTOffset = funct === UInt(0)
-  val doLUTSlope = funct === UInt(1)
-
+  // initialize LUT
   val LUT = Module(new LUT_ROM())
-  
+  LUT.io.req.bits.curve_select := curve_select
+  LUT.io.req.bits.v_mem := v_mem
 
-  // datapath
-  //val vmem = Reg(UInt(width = 32)) 
-  val vmem = RegInit(0.U(32.W))
+  // Return variable
+  val output = RegInit(0.U(32.W))
 
-  //val curveSelect = Reg(UInt(width = 5))
-  val curveSelect = RegInit(0.U(32.W))
+  // Setup states
+  val s_idle :: s_req_lut :: s_resp_lut :: s_resp_count :: s_resp :: Nil = Enum(5)
+  val state = RegInit(s_idle)
 
-  //val result = Reg(UInt(width = 32))
-  val result = RegInit(0.U(32.W))
+  // When we get a command, start the LUT and
+  // move to the s_req_lut state, waiting for the
+  // LUT to finish
+  when (io.cmd.fire()){
+      // io.cmd only has the right values in this block
+      v_mem := io.cmd.bits.rs1
+      curve_select := io.cmd.bits.rs2
+      funct := io.cmd.bits.inst.funct
+      req_rd := io.cmd.bits.inst.rd
+      when (io.cmd.bits.inst.funct === 2.U) {
+        call_count := 0.U
+        state := s_resp_count
+      } .elsewhen (io.cmd.bits.inst.funct === 3.U) {
+        state := s_resp_count
+      } .otherwise {
+        call_count := call_count + 1.U
+        state := s_req_lut
+      }
 
-  //val offset = Reg(UInt(width = 32))
-  val offset = RegInit(0.U(32.W))
-
-  //val slope = Reg(UInt(width = 32))
-  val slope = RegInit(0.U(32.W))
-
- // val s_idle :: s_lut_req :: s_lut_resp :: s_resp :: Nil = Enum(Bits(),4)
-  //val state = Reg(init = s_idle)
-
-  when (cmd.fire() && doLUTOffset) {
-      vmem := cmd.bits.rs1
-      curveSelect := cmd.bits.rs2
-
-   //   state := s_lut_req
-      LUT.io.Vmem := vmem
-      LUT.io.curveSelect := curveSelect
-
-      offset := LUT.io.offset
-      slope := LUT.io.slope
-      result := offset
   }
 
+  when (LUT.io.req.fire()) { state := s_resp_lut }
 
-  when (cmd.fire() && doLUTSlope){
-      vmem := cmd.bits.rs1
-      curveSelect := cmd.bits.rs2
-
-      LUT.io.Vmem := vmem
-      LUT.io.curveSelect := curveSelect
-
-      offset := LUT.io.offset
-      slope := LUT.io.slope
-
-      result := slope
+  when (LUT.io.resp.fire()) {
+    output := Mux(do_LUT_offset, LUT.io.resp.bits.offset, LUT.io.resp.bits.slope)
+    state := s_resp
   }
-  //when (cmd.fire() && doLUTSlope) {
-  //    state := s_resp
-  //}
 
-  //when (state === s_lut_req) {
-  //    state := s_lut_resp
-  //}
+  when (state === s_resp_count) {
+    output := call_count
+    state := s_resp
+  }
 
-  //when (state === s_lut_resp) {
-  //    offset := LUT.io.offset
-  //    slope := LUT.io.slope
-  //    when(doLUTOffset){
-  //        result := offset
-  //    }
-  //    when(doLUTSlope){
-  //        result := slope
-  //    }
-  //    state := s_resp
-  //}
+  when (io.resp.fire()) { state := s_idle }
 
-  //when (io.resp.fire()) { state := s_idle }
+  printf("cmd: ready %d   valid %d -- resp:  ready %d  valid %d -- v:%x c:%x output:%x\n",
+      io.cmd.ready, io.cmd.valid, io.resp.ready, io.resp.valid, io.cmd.bits.rs1, io.cmd.bits.rs2, io.resp.bits.data)
 
-  // control
+  LUT.io.req.valid := (state === s_req_lut)
+  LUT.io.resp.ready := (state === s_resp_lut)
 
-  val doResp = cmd.bits.inst.xd
-  val stallResp = doResp && !io.resp.ready
+  io.cmd.ready := (state === s_idle)
 
-  cmd.ready := !stallResp //&& (state === s_idle)
-    // command resolved if no stalls AND not issuing a load that will need a request
+  io.resp.valid := (state === s_resp)
+  io.resp.bits.rd := req_rd
+  io.resp.bits.data := output
+  // NEVER have the following, it results in the processor stalling
+  // io.resp.bits.rd := io.cmd.bits.inst.rd
 
-  // PROC RESPONSE INTERFACE
-  io.resp.valid := cmd.valid && doResp //&& (state === s_resp)
-    // valid response if valid command, need a response, and no stalls
-  io.resp.bits.rd := cmd.bits.inst.rd
-    // Must respond with the appropriate tag or undefined behavior
-  io.resp.bits.data := result
-    // Semantics is to always send out prior accumulator register value
-
-  io.busy := cmd.valid || busy.reduce(_||_)
-    // Be busy when have pending memory requests or committed possibility of pending requests
-  io.interrupt := Bool(false)
-    // Set this true to trigger an interrupt on the processor (please refer to supervisor documentation)
-  io.mem.req.valid := Bool(false)
-
+  io.busy := (state =/= s_idle)
+  io.interrupt := false.B
+  io.mem.req.valid := false.B
 }

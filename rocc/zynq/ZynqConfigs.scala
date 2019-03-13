@@ -14,8 +14,12 @@ class ZynqFPGAAcceleratorConfig extends Config(new WithoutTLMonitors ++ new With
 // This config produces a rocket-chip for a Zynq FPGA using a custom accelerator whose config is MultAcceleratorConfig
 // Configs for other accelerators will look similar to this one e.g.
 // class YourConfig extends Config(new ZynqFPGAAcceleratorConfig ++ new freechips.rocketchip.system.YourAcceleratorConfig)
+
+// This config produces a rocket-chip for a Zynq FPGA using a custom accelerator whose config is MultAcceleratorConfig
 class ZynqFPGAMultAcceleratorConfig extends Config(new ZynqFPGAAcceleratorConfig ++ new freechips.rocketchip.system.MultAcceleratorConfig)
+
+// This config produces a rocket-chip for a Zynq FPGA using a custom accelerator whose config is MultStateAcceleratorConfig
+class ZynqFPGAMultStateAcceleratorConfig extends Config(new ZynqFPGAAcceleratorConfig ++ new freechips.rocketchip.system.MultStateAcceleratorConfig)
 
 // This config produces a rocket-chip for a Zynq FPGA using a custom accelerator whose config is LUTROMAcceleratorConfig
 class ZynqFPGALUTROMAcceleratorConfig extends Config(new ZynqFPGAAcceleratorConfig ++ new freechips.rocketchip.system.LUTROMAcceleratorConfig)
-
