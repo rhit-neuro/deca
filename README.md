@@ -1,5 +1,5 @@
-# DECA
-**DE**signing **C**omputational **A**rchitectures
+# DeCA
+**DE**veloping **C**omputational **A**rchitectures
 
 ## Setting up your environment
 We highly recommend using docker for your development environment.
@@ -33,3 +33,18 @@ make project CONFIG=ZynqFPGAMyAcceleratorConfig ROCKETCHIP_ADDONS=accelerators
 make CONFIG=ZynqFPGAMyAcceleratorConfig ROCKETCHIP_ADDONS=accelerators
 ```
 When you make changes to your accelerator, just rerun the above 3 `make` commands.
+
+#### Building Linux
+In order to change what events the Rocket Chip's hardware performance monitors count, you must rebuild linux. The following will build linux with our default hardware performance monitors enabled.
+```bash
+cd firesim-software
+git submodule update --init
+cd riscv-pk
+git apply ../../patches/riscv-pk/bbl-perf-counters.patch
+cd ..
+./sw-manager -c br-disk.json build
+```
+If you want to change what events are counted, edit `firesim-software/riscv-pk/machine/minit.c` then change to the firesim-software directory and run:
+```bash
+machine/minit.c
+```
