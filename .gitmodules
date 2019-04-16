@@ -4,3 +4,6 @@
 [submodule "firesim-software"]
 	path = firesim-software
 	url = https://github.com/firesim/firesim-software.git
+[submodule "deca-docker"]
+	path = deca-docker
+	url = git@ada.csse.rose-hulman.edu:neuroprocessor-group/deca-docker.git
