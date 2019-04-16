@@ -29,7 +29,7 @@ class MyAcceleratorModule(outer: MyAccelerator, n: Int = 4)(implicit p: Paramete
 #### Things you need to change
   - `package myaccelerator` - Change `myaccelerator` to whatever you want to name the package your accelerator resides in, preferably all lowercase.
   - `MyAccelerator` - Change `MyAccelerator` to whatever you want to name your accelerator. Note, this name is used twice in this template. This name will be used again later in your [AcceleratorConfigs.scala](config/AcceleratorConfigs.scala).
-  - `MyAcceleratorModule` - Change `MyAccelerator` whatever you want to name your accelerator and keeep the `Module` suffix. Note, this name is used twice in this tekplate
+  - `MyAcceleratorModule` - Change `MyAccelerator` whatever you want to name your accelerator and keep the `Module` suffix. Note, this name is used twice in this template
   - You'll also need to add your accelerator code to the body of class `MyAcceleratorModule`. See [mult.scala](mult/mult.scala) for a working example.
 
 ### Accelerator Config Template
@@ -56,6 +56,7 @@ class WithMyAccelerator extends Config((site, here, up) => {
   - `WithMyAccelerator` - Change `MyAccelerator` while keeping the prefix `With`. Note that this name appears twice in the template.
   - `opcodes = OpcodeSet.custom0` - Change `custom0` to match up with the opcode you plan on using for your RoCC instruction that accesses your accelerator (can be `custom0` through `custom3`).
   - `val acc = LazyModule(new myaccelerator.MyAccelerator()(p))` - `acc` can be any name you want. Change `myaccelerator` to the package you declared your accelerator in. Change `MyAccelerator` to the name of your accelerator class.
+  - `acc` - make sure this name matches whatever name you used for the `LazyModule` in the previous line.
 
 ### Putting your accelerator on a FPGA
 Follow the instructions in [zynq](../zynq) to configure a `rocket-chip` that can be put on an FPGA with your accelerator.
