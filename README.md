@@ -51,6 +51,10 @@ git apply ../../patches/riscv-pk/bbl-perf-counters.patch
 cd ..
 ./sw-manager -c br-disk.json build
 ```
+This will compile Linux with your modified bootloader. This will create two files in the `images` directory.
+- `br-disk-bin` - This binary is the bootloader bundled with your RISC-V Linux kernel as its payload.
+- `br-disk.img` - This is your ext2 root filesystem for Linux.
+
 If you want to change what events are counted, edit `firesim-software/riscv-pk/machine/minit.c` then change to the `firesim-software` directory and run:
 ```bash
 ./sw-manager -c br-disk.json build
