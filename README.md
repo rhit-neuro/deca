@@ -59,3 +59,6 @@ If you want to change what events are counted, edit `firesim-software/riscv-pk/m
 ```bash
 ./sw-manager -c br-disk.json build
 ```
+
+## A note on `fpga-images-zedboard` submodule
+The `fpga-images-zedboard` within `fpga-zynq` has an out of date `fesvr-zynq` which doesn't let us boot Linux with a disk image. Whenever Josh's merge request [here](https://github.com/ucb-bar/fpga-images-zedboard/pull/3) is accepted, you'll need to update the `fpga-images-zedboard` submodule in [fpga-zynq](https://github.com/ucb-bar/fpga-zynq), submit a merge request, wait for that to be accepted, then update `fpga-zynq` in this repository. After all of that, you can remove the `fpga-images-zedboard` submodule from this repository.
