@@ -25,7 +25,7 @@ class LUTROMAcceleratorModule(outer: LUTROMAccelerator, n: Int = 4)(implicit p: 
   val do_get_count = (funct === 3.U)
 
   // initialize LUT
-  val LUT = Module(new LUT_ROM())
+  val LUT = Module(new LUTROM())
   LUT.io.req.bits.curve_select := curve_select
   LUT.io.req.bits.v_mem := v_mem
 

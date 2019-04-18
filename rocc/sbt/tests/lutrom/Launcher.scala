@@ -7,8 +7,8 @@ import utils.TesterRunner
 object Launcher {
   val tests = Map(
     "LUTROM" -> { (manager: TesterOptionsManager) =>
-       Driver.execute(() => new LUT_ROM(), manager) {
-         (c) => new LUTROMTests(c)
+       Driver.execute(() => new LUTROM(), manager) {
+         (c) => new LUTROMTest(c)
        }
     },
     "FPGreaterThan" -> { (manager: TesterOptionsManager) =>

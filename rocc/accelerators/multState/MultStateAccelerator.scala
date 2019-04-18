@@ -20,7 +20,7 @@ class MultStateAcceleratorModule(outer: MultStateAccelerator, n: Int = 4)(implic
   val two = RegInit(8.U(64.W))
   val result = RegInit(9.U(64.W))
 
-  val mult = Module(new Mult())
+  val mult = Module(new MultState())
 
   val s_idle :: s_req_mult :: s_resp_mult :: s_wait :: s_resp :: Nil = Enum(5)
   val state = RegInit(s_idle)
@@ -58,7 +58,7 @@ class MultStateAcceleratorModule(outer: MultStateAccelerator, n: Int = 4)(implic
     state := s_resp
   }
 
-  when (io.resp.fire()) { 
+  when (io.resp.fire()) {
     state := s_idle
   }
   // control
