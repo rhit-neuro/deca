@@ -3,8 +3,8 @@
 
 # Add symbolic links to our multiplier test assembly file along
 # with the necessary header files
-ln -s $(pwd)/../custom_tests/mult $(pwd)/../fpga-zynq/rocket-chip/riscv-tools/riscv-tests/isa/mult
-ln -s $(pwd)/../custom_tests/macros/custom $(pwd)/../fpga-zynq/rocket-chip/riscv-tools/riscv-tests/isa/macros/custom
+ln -s $(pwd)/../verilator-tests/mult $(pwd)/../fpga-zynq/rocket-chip/riscv-tools/riscv-tests/isa/mult
+ln -s $(pwd)/../verilator-tests/macros/custom $(pwd)/../fpga-zynq/rocket-chip/riscv-tools/riscv-tests/isa/macros/custom
 
 # Apply a patch to the isa directory to the Makefile to allow us to only
 # run our multiplier tests
@@ -12,21 +12,21 @@ ln -s $(pwd)/../custom_tests/macros/custom $(pwd)/../fpga-zynq/rocket-chip/riscv
 # make all - compiles our test program
 # undo the patch
 pushd ../fpga-zynq/rocket-chip/riscv-tools/riscv-tests/isa/
-git apply ../../../../../custom_tests/mult_tests.patch
+git apply ../../../../../verilator-tests/mult_tests.patch
 make clean
 make all
-git apply -R ../../../../../custom_tests/mult_tests.patch
+git apply -R ../../../../../verilator-tests/mult_tests.patch
 popd
 
 # Make the directory output if it does not already exists
-mkdir -p ../custom_tests/output
+mkdir -p ../verilator-tests/output
 
 # move the multiplier test files to the output folder if they exist
 if [ -f ../fpga-zynq/rocket-chip/riscv-tools/riscv-tests/isa/mult-p-doMult ]; then
-    mv ../fpga-zynq/rocket-chip/riscv-tools/riscv-tests/isa/mult-p-doMult ../custom_tests/output
+    mv ../fpga-zynq/rocket-chip/riscv-tools/riscv-tests/isa/mult-p-doMult ../verilator-tests/output
 fi
 if [ -f ../fpga-zynq/rocket-chip/riscv-tools/riscv-tests/isa/mult-v-doMult ]; then
-    mv ../fpga-zynq/rocket-chip/riscv-tools/riscv-tests/isa/mult-v-doMult ../custom_tests/output
+    mv ../fpga-zynq/rocket-chip/riscv-tools/riscv-tests/isa/mult-v-doMult ../verilator-tests/output
 fi
 
 # remove all the dump files from the isa directory

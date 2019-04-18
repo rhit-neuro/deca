@@ -45,7 +45,7 @@ scalaSource in Test := baseDirectory.value / "tests"
 scalaSource in Compile := baseDirectory.value / "../accelerators"
 
 //Exclude specific files
-excludeFilter in unmanagedSources := "lut.scala" || "multState.scala" || "AcceleratorConfigs.scala*" || "mult.scala"
+excludeFilter in unmanagedSources := "LUTROMAccelerator.scala" || "MultAccelerator.scala" || "AcceleratorConfigs.scala*" || "MultStateAccelerator.scala"
 
 // Provide a managed dependency on X if -DXVersion="" is supplied on the command line.
 // The following are the current "release" versions.

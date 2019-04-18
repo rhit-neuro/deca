@@ -5,7 +5,7 @@ import chisel3._
 import chisel3.util._
 
 // A simple module that takes in two numbers and multiples them together
-class Mult extends Module{
+class MultState extends Module{
         val io = IO(new Bundle {
                 val req = Flipped(Decoupled(new Bundle {
                         val one = Input(UInt(64.W))

@@ -4,16 +4,16 @@ import chisel3.iotesters.{ChiselFlatSpec, Driver, PeekPokeTester}
 import chisel3.iotesters.PeekPokeTester
 import chisel3._
 
-class LUTROMTests(c: LUT_ROM) extends PeekPokeTester(c) {
-  
+class LUTROMTest(c: LUTROM) extends PeekPokeTester(c) {
+
 
   // Legend:
-  // c.io.req.bits.v_mem : The input v_mem that is used to figure out what slope and/or offset value 
+  // c.io.req.bits.v_mem : The input v_mem that is used to figure out what slope and/or offset value
   // c.io.req.bits.curve_select : The input curve_select that decides what curve you want
   // c.io.req.bits.slope : The output slope that is the nearest slope for the input v_mem for the selected curve
   // c.io.req.bits.offset : The output offset that is the nearest offset for the input v_mem for the selected curve
   // c.io.req.ready : The output req.ready that is true when LUT_ROM is ready to recieve a request
-  // c.io.req.valid : The input req.valid that is true when a request is sent to LUT_ROM 
+  // c.io.req.valid : The input req.valid that is true when a request is sent to LUT_ROM
   // c.io.resp.ready : The input resp.ready that is true when the LUT_ROM can respond back
   // c.io.resp.valid : The output resp.valid that is true when the LUT_ROM has a valid response
 
@@ -83,7 +83,7 @@ class LUTROMTests(c: LUT_ROM) extends PeekPokeTester(c) {
   expect(c.io.req.ready,false.B)
   expect(c.io.resp.valid,true.B)
   expect(c.io.resp.bits.slope,"h3ffa4745".U(32.W))
-  expect(c.io.resp.bits.offset,"h3f7c9321".U(32.W)) 
+  expect(c.io.resp.bits.offset,"h3f7c9321".U(32.W))
 
   step(1)
   // New v_mem and same curve_select values
@@ -113,7 +113,7 @@ class LUTROMTests(c: LUT_ROM) extends PeekPokeTester(c) {
   expect(c.io.req.ready,false.B)
   expect(c.io.resp.valid,true.B)
   expect(c.io.resp.bits.slope,"h3e879d0a".U(32.W))
-  expect(c.io.resp.bits.offset,"h3cae642c".U(32.W)) 
+  expect(c.io.resp.bits.offset,"h3cae642c".U(32.W))
 
   step(1)
   // New v_mem and same curve_select values
@@ -141,9 +141,9 @@ class LUTROMTests(c: LUT_ROM) extends PeekPokeTester(c) {
   step(1)
   // s_resp
   expect(c.io.req.ready,false.B)
-  expect(c.io.resp.valid,true.B)  
+  expect(c.io.resp.valid,true.B)
   expect(c.io.resp.bits.slope,"h00000000".U(32.W))
-  expect(c.io.resp.bits.offset,"h3f7fd567".U(32.W)) 
+  expect(c.io.resp.bits.offset,"h3f7fd567".U(32.W))
 
   step(1)
   // New v_mem and same curve_select values
@@ -171,9 +171,9 @@ class LUTROMTests(c: LUT_ROM) extends PeekPokeTester(c) {
   step(1)
   // s_resp
   expect(c.io.req.ready,false.B)
-  expect(c.io.resp.valid,true.B)  
+  expect(c.io.resp.valid,true.B)
   expect(c.io.resp.bits.slope,"h40a3cd36".U(32.W))
-  expect(c.io.resp.bits.offset,"h3e983559".U(32.W)) 
+  expect(c.io.resp.bits.offset,"h3e983559".U(32.W))
 
   step(1)
   // Same v_mem and curve_select values
@@ -185,8 +185,8 @@ class LUTROMTests(c: LUT_ROM) extends PeekPokeTester(c) {
   expect(c.io.req.ready,false.B)
   expect(c.io.resp.valid,true.B)
   expect(c.io.resp.bits.slope,"h40a3cd36".U(32.W))
-  expect(c.io.resp.bits.offset,"h3e983559".U(32.W)) 
-  
+  expect(c.io.resp.bits.offset,"h3e983559".U(32.W))
+
   step(1)
   // Testing Curve #2
   // New v_mem and curve_select values
