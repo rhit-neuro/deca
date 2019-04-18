@@ -38,6 +38,8 @@ class MyAcceleratorAcceleratorModule(outer: MyAccelerator, n: Int = 4)(implicit 
 ### RoCC Accelerator Config Template
 Continuing the example for creating `MyAcceleratorAccelerator`, add a configuration in [config/AcceleratorConfigs.scala](config/AcceleratorConfigs.scala) using the following template:
 ```scala
+import myaccelerator._ // goes with the other imports
+
 class MyAcceleratorConfig extends Config(
   new WithMyAccelerator ++ new DefaultConfig)
 
@@ -55,6 +57,7 @@ class WithMyAccelerator extends Config((site, here, up) => {
 })
 ```
 #### Things you need to change
+  - `myaccelerator` - CChange `myaccelerator` to what you decided to name the package your accelerator resides in, preferably all lowercase.
   - `MyAcceleratorConfig` - Change `MyAccelerator` while keeping the suffix `Config`. This is the name of the config you will use when creating a `ZynqFPGA...` config in [ZynqConfigs.scala](../zynq/ZynqConfigs.scala).
   - `WithMyAccelerator` - Change `MyAccelerator` while keeping the prefix `With`. Note that this name appears twice in the template.
   - `opcodes = OpcodeSet.custom0` - Change `custom0` to match up with the opcode you plan on using for your RoCC instruction that accesses your accelerator (can be `custom0` through `custom3`).

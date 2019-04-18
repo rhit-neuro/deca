@@ -13,7 +13,7 @@ After cloning this repo, execute the following to download the `chisel` code for
 git submodule update --init --recursive
 ```
 #### Making a new accelerator
-Start with the instructions in [accelerators/](rocc/accelerators/) to make your own accelerator.
+Start with the instructions in [sbt/] (rocc/sbt/) and [accelerators/](rocc/accelerators/) to make your own accelerator.
 #### Installing your accelerator
 Now executing the following will "install" custom accelerators into the `rocket-chip`:
 ```bash

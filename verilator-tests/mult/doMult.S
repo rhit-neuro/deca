@@ -12,10 +12,10 @@
 start:
 
     RVTEST_CODE_BEGIN
-    
+
     li x12, 6
     li x13, 7
-    ROCC_INSTRUCTION_RAW_R_R_R(CUSTOM_X,11, 12, 13, FUNCT_DO_MULT)   # call doMult macro that is defined in multiplier.h
+    ROCC_INSTRUCTION_RAW_R_R_R(CUSTOM_X,11, 12, 13, FUNCT_DO_MULT)
     li x5, 42
     bne x11, x5, fail
     RVTEST_PASS # success
@@ -26,5 +26,5 @@ fail:
     RVTEST_CODE_END # End of test code
 
 RVTEST_DATA_BEGIN
-  
+
 RVTEST_DATA_END
