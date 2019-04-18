@@ -3,8 +3,8 @@
 
 # Add symbolic links to our LUTROM test assembly file along
 # with the necessary header files
-ln -s $(pwd)/../custom_tests/LUTROM $(pwd)/../fpga-zynq/rocket-chip/riscv-tools/riscv-tests/isa/LUTROM
-ln -s $(pwd)/../custom_tests/macros/custom $(pwd)/../fpga-zynq/rocket-chip/riscv-tools/riscv-tests/isa/macros/custom
+ln -s $(pwd)/../verilator-tests/LUTROM $(pwd)/../fpga-zynq/rocket-chip/riscv-tools/riscv-tests/isa/LUTROM
+ln -s $(pwd)/../verilator-tests/macros/custom $(pwd)/../fpga-zynq/rocket-chip/riscv-tools/riscv-tests/isa/macros/custom
 
 # Apply a patch to the isa directory to the Makefile to allow us to only
 # run our LUTROM tests
@@ -12,21 +12,21 @@ ln -s $(pwd)/../custom_tests/macros/custom $(pwd)/../fpga-zynq/rocket-chip/riscv
 # make all - compiles our test program
 # undo the patch
 pushd ../fpga-zynq/rocket-chip/riscv-tools/riscv-tests/isa/
-git apply ../../../../../custom_tests/LUTROM_tests.patch
+git apply ../../../../../verilator-tests/LUTROM_tests.patch
 make clean
 make all
-git apply -R ../../../../../custom_tests/LUTROM_tests.patch
+git apply -R ../../../../../verilator-tests/LUTROM_tests.patch
 popd
 
 # Make the directory output if it does not already exists
-mkdir -p ../custom_tests/output
+mkdir -p ../verilator-tests/output
 
 # move the LUTROM test files to the output folder if they exist
 if [ -f ../fpga-zynq/rocket-chip/riscv-tools/riscv-tests/isa/LUTROM-p-curve_0 ]; then
-    mv ../fpga-zynq/rocket-chip/riscv-tools/riscv-tests/isa/LUTROM-p-curve_0 ../custom_tests/output
+    mv ../fpga-zynq/rocket-chip/riscv-tools/riscv-tests/isa/LUTROM-p-curve_0 ../verilator-tests/output
 fi
 if [ -f ../fpga-zynq/rocket-chip/riscv-tools/riscv-tests/isa/LUTROM-v-curve_0 ]; then
-    mv ../fpga-zynq/rocket-chip/riscv-tools/riscv-tests/isa/LUTROM-v-curve_0 ../custom_tests/output
+    mv ../fpga-zynq/rocket-chip/riscv-tools/riscv-tests/isa/LUTROM-v-curve_0 ../verilator-tests/output
 fi
 
 # remove all the dump files from the isa directory

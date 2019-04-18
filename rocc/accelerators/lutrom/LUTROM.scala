@@ -4,7 +4,7 @@ import chisel3._
 import chisel3.util._
 
 
-class LUT_ROM extends Module{
+class LUTROM extends Module{
    // Declare inputs and outputs
    val io = IO(new Bundle {
       // Decoupled inputs must be Flipped

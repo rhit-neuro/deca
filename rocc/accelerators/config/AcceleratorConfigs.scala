@@ -42,7 +42,7 @@ class WithMultAccelerator extends Config((site, here, up) => {
 })
 
 
-// LUT ROM Accelerator
+// LUTROM Accelerator
 class LUTROMAcceleratorConfig extends Config(
   new WithLUTROMAccelerator ++ new DefaultConfig)
 
