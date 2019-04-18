@@ -101,6 +101,13 @@ object Launcher {
 -   `(c) => new MyAcceleratorTest(c)` - change `MyAcceleratorTest` to the name you used above for `MyAcceleratorTest`
 -   `TesterRunner("myaccelerator", tests, args)` - change `myaccelerator` to the same as the package name
 
+### Checking build.sbt before Running Chisel Tests
+The build.sbt gives sbt specific properties, including the path to source files and declaring what files to exclude.
+
+-   `scalaSource in Test := baseDirectory.value / "tests"` - If you followed the tutorial, this line is fine and doesn't need any changes. If your tests are in a different folder, `tests` will need to change the path that needs to be taken to get to that folder. (The tests are allowed to be in the subfolders of the specified folder)
+-   `scalaSource in Compile := baseDirectory.value / "../accelerators"` - If you followed the turoial, this line is fine and doesn't need any changes. If your source files are in a different folder, `../accelerators` will need to change to the path that needs to be taken to get to that folder. (The sources are allowed to be in the subfolders of the specified folder)
+-   `excludeFilter in unmanagedSources :=` - After the `=`, there will be a list of file names separated by a `||`. Make sure that all files in the `tests` and `../accelerators` folder that reference the rocket chip are included here. This should be the `MyAcceleratorAccelerator.scala` files and the `AcceleratorConfigs.scala` file.
+
 ## Running Chisel Tests for Accelerator
 Now that you created the tests, you can now run the tests using the sbt command line. First, go to the `deca/rocc/sbt` directory. Next type the following into the command line.
 

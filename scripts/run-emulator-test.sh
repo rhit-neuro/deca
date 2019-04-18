@@ -22,7 +22,7 @@ if [ "$CONFIG_UPDATE" = "true" ]; then
     ./install-symlinks.sh
 fi
 
-cp ../custom_tests/output/$ACCELERATOR-p-$TEST ../fpga-zynq/rocket-chip/emulator
+cp ../verilator-tests/output/$ACCELERATOR-p-$TEST ../fpga-zynq/rocket-chip/emulator
 
 # Make the config if needed
 # Run the selected test

@@ -84,7 +84,7 @@ index 4e1ba20..776cb7f 100644
  tests_hex = $(addsuffix .hex, $(tests))
  tests_out = $(addsuffix .out, $(spike_tests))
  tests32_out = $(addsuffix .out32, $(spike32_tests))
-+accelerators = LUTROM-v-doLUTROM LUTROM-p-doLUTROM
++accelerators = LUTROM-v-curve_0 LUTROM-p-curve_0
 
  run: $(tests_out) $(tests32_out)
 
