@@ -6,7 +6,7 @@
 	url = https://github.com/firesim/firesim-software.git
 [submodule "deca-docker"]
 	path = deca-docker
-	url = git@ada.csse.rose-hulman.edu:neuroprocessor-group/deca-docker.git
+	url = https://github.com/rhit-neuro/deca-docker.git
 [submodule "fpga-images-zedboard"]
 	path = fpga-images-zedboard
 	url = https://github.com/heidecjj/fpga-images-zedboard.git

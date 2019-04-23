@@ -3,7 +3,7 @@
 
 ## Setting up your environment
 We highly recommend using docker for your development environment.
-Follow the instructions in [rocket-chip-env](https://ada.csse.rose-hulman.edu/neuroprocessor-group/deca-docker/tree/master/rocket-chip-env) for setting up the docker image associated with this project.
+Follow the instructions in [rocket-chip-env](https://github.com/rhit-neuro/deca-docker/tree/master/rocket-chip-env) for setting up the docker image associated with this project.
 
 ## Getting started
 #### First time setup

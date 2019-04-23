@@ -1,8 +1,8 @@
 # Verilator
-The verilator is a cycle-accurate verilog simulator that is included in the [rocket-chip](https://github.com/freechipsproject/rocket-chip/tree/7cd3352c3b802c3c50cb864aee828c6106414bb3) directory that is used in the [fpga-zynq](https://github.com/ucb-bar/fpga-zynq) repository inside our [deca](https://ada.csse.rose-hulman.edu/neuroprocessor-group/deca) repository. These verilator simulations are compiled and ran inside the emulator folder. The verilator can be used to test the custom accelerator that is created by showing a cycle by cycle output of what happens when running specific tests written in either c or assembly.
+The verilator is a cycle-accurate verilog simulator that is included in the [rocket-chip](https://github.com/freechipsproject/rocket-chip/tree/7cd3352c3b802c3c50cb864aee828c6106414bb3) directory that is used in the [fpga-zynq](https://github.com/ucb-bar/fpga-zynq) repository inside our [deca](https://github.com/rhit-neuro/deca) repository. These verilator simulations are compiled and ran inside the emulator folder. The verilator can be used to test the custom accelerator that is created by showing a cycle by cycle output of what happens when running specific tests written in either c or assembly.
 
 ### Development Environment
-We used docker to simplify setting up development environments. Make sure you are using your container for the docker image, [deca-docker/rocket-chip-env](https://ada.csse.rose-hulman.edu/neuroprocessor-group/deca-docker/tree/master/rocket-chip-env#running-for-the-first-time). Look inside this repository for instructions on how to run your docker container for the deca repository.
+We used docker to simplify setting up development environments. Make sure you are using your container for the docker image, [deca-docker/rocket-chip-env](https://github.com/rhit-neuro/deca-docker/tree/master/rocket-chip-env#running-for-the-first-time). Look inside this repository for instructions on how to run your docker container for the deca repository.
 
 ### Writing Assembly Tests
 The first step to using the verilator is to write custom assembly tests. This is done inside the `deca/verilator-tests` folder.
@@ -93,7 +93,7 @@ spike_tests += $(myaccelerator_p_tests) $(myaccelrator_v_tests)
 ### Create the necessary patch file
 Now you will need to create a patch for `deca/fpga-zynq/rocket-chip/riscv-tools/riscv-tests/isa`. This is the directory where the assembly tests are compiled and built.
 
-Download [assembly-tests-base.patch](https://ada.csse.rose-hulman.edu/neuroprocessor-group/deca/snippets/26) and use that as your base patch. Put this in the `deca/verilator-tests` folder and name it, `MyAccelerator_tests.patch`.
+Download [assembly-tests-base.patch](https://gist.github.com/heidecjj/a03fda51fb43a7cc086b606ff2adbdc4) and use that as your base patch. Put this in the `deca/verilator-tests` folder and name it, `MyAccelerator_tests.patch`.
 
 #### Things you need to change
 -   `MyAccelerator_tests.patch` - change `MyAccelerator` to the name of your accelerator, keeping the suffix `_tests.patch`
