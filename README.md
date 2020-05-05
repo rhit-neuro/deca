@@ -27,6 +27,8 @@ Start with the instructions in [sbt/](rocc/sbt/) and [accelerators/](rocc/accele
 
 Additionally, look at [Multiplier Tutorial](https://github.com/rhit-neuro/deca/wiki/multiplier). It contains an walkthrough for building a custom accelerator.
 
+Chisel is used for development. [Here](https://github.com/rhit-neuro/deca/wiki/Chisel) are some resources for learning how to use Chisel.
+
 ### Installing and Building your accelerator
 See [Building Rocket Chip with your Accelerator](https://github.com/rhit-neuro/deca/wiki/Building-Rocket-Chip-with-your-Accelerator) to learn how to build either the LUTROM acceletator or your own custom accelerator.
 
