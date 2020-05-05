@@ -23,7 +23,7 @@ git submodule update --init --recursive
 This will download all submodules required for development. **You need to do this inside the docker container**.
 
 ### Making a new accelerator
-Start with the instructions in [sbt/] (rocc/sbt/) and [accelerators/](rocc/accelerators/) to make your own accelerator.
+Start with the instructions in [sbt/](rocc/sbt/) and [accelerators/](rocc/accelerators/) to make your own accelerator.
 
 Additionally, look at [Multiplier Tutorial](https://github.com/rhit-neuro/deca/wiki/multiplier). It contains an walkthrough for building a custom accelerator.
 
