@@ -15,6 +15,16 @@ object Launcher {
        Driver.execute(() => new FPGreaterThan(), manager) {
          (c) => new FPGreaterThanTests(c)
        }
+    },
+    "MulAddFN" -> { (manager: TesterOptionsManager) =>
+       Driver.execute(() => new MulAddFN(), manager) {
+         (c) => new FMADDTests(c)
+       }
+    },
+    "LUTROMScaled" -> { (manager: TesterOptionsManager) =>
+       Driver.execute(() => new LUTROMScaledReduced(), manager) {
+         (c) => new LUTROMScaledTest(c)
+       }
     }
   )
 

@@ -1,0 +1,52 @@
+package lutrom
+
+import chisel3._
+
+class LUTScalesTable1 extends Module {
+    val io = IO(new Bundle {
+        val scale0 = Output(new LUTScale())
+        val scale1 = Output(new LUTScale())
+        val scale2 = Output(new LUTScale())
+        val scale3 = Output(new LUTScale())
+        val scale4 = Output(new LUTScale())
+        val scale5 = Output(new LUTScale())
+        val scale6 = Output(new LUTScale())
+        val scale7 = Output(new LUTScale())
+        val scale8 = Output(new LUTScale())
+        val scale9 = Output(new LUTScale())
+        val scale10 = Output(new LUTScale())
+        val scale11 = Output(new LUTScale())
+        val scale12 = Output(new LUTScale())
+        val scale13 = Output(new LUTScale())
+    })
+
+    io.scale0.a := "h42a60000".U(32.W)
+    io.scale0.b := "h3fd47ae1".U(32.W)
+    io.scale1.a := "h42f00000".U(32.W)
+    io.scale1.b := "h4095c290".U(32.W)
+    io.scale2.a := "h43160000".U(32.W)
+    io.scale2.b := "h408b3333".U(32.W)
+    io.scale3.a := "hc3fa0000".U(32.W)
+    io.scale3.b := "hc1700000".U(32.W)
+    io.scale4.a := "h44160000".U(32.W)
+    io.scale4.b := "h41e028f6".U(32.W)
+    io.scale5.a := "hc3af0000".U(32.W)
+    io.scale5.b := "hc19b6667".U(32.W)
+    io.scale6.a := "h43d20000".U(32.W)
+    io.scale6.b := "h419e978e".U(32.W)
+    io.scale7.a := "hc3b40000".U(32.W)
+    io.scale7.b := "hc19e6666".U(32.W)
+    io.scale8.a := "h430f0000".U(32.W)
+    io.scale8.b := "h40403127".U(32.W)
+    io.scale9.a := "hc2de0000".U(32.W)
+    io.scale9.b := "hc046e979".U(32.W)
+    io.scale10.a := "h43020000".U(32.W)
+    io.scale10.b := "h40b70a3d".U(32.W)
+    io.scale11.a := "hc3200000".U(32.W)
+    io.scale11.b := "hc12147ae".U(32.W)
+    io.scale12.a := "h42c80000".U(32.W)
+    io.scale12.b := "h400ccccd".U(32.W)
+    io.scale13.a := "hc3480000".U(32.W)
+    io.scale13.b := "hc0e00000".U(32.W)
+
+}

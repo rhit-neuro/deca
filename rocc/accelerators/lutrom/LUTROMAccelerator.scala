@@ -23,9 +23,10 @@ class LUTROMAcceleratorModule(outer: LUTROMAccelerator, n: Int = 4)(implicit p: 
   val do_LUT_slope = (funct === 1.U)
   val do_reset_count = (funct === 2.U)
   val do_get_count = (funct === 3.U)
+  val do_LUT_scaled = (funct == 4.U)
 
   // initialize LUT
-  val LUT = Module(new LUTROM())
+  val LUT = Module(new LUTROMScaledReduced())
   LUT.io.req.bits.curve_select := curve_select
   LUT.io.req.bits.v_mem := v_mem
 
@@ -60,7 +61,8 @@ class LUTROMAcceleratorModule(outer: LUTROMAccelerator, n: Int = 4)(implicit p: 
   when (LUT.io.req.fire()) { state := s_resp_lut }
 
   when (LUT.io.resp.fire()) {
-    output := Mux(do_LUT_offset, LUT.io.resp.bits.offset, LUT.io.resp.bits.slope)
+    //output := Mux(do_LUT_offset, LUT.io.resp.bits.offset, LUT.io.resp.bits.slope)
+    output := Mux(do_LUT_offset, LUT.io.resp.bits.offset, Mux(do_LUT_slope, LUT.io.resp.bits.slope, LUT.io.resp.bits.scaled_vmem))
     state := s_resp
   }
 
@@ -76,6 +78,9 @@ class LUTROMAcceleratorModule(outer: LUTROMAccelerator, n: Int = 4)(implicit p: 
 
   LUT.io.req.valid := (state === s_req_lut)
   LUT.io.resp.ready := (state === s_resp_lut)
+
+  // scale_mux.io.req.valid := (state === s_req_scale)
+  // scale_mux.io.resp.ready := (state === s_resp_scale)
 
   io.cmd.ready := (state === s_idle)
 
