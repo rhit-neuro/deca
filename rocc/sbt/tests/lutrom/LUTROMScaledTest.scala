@@ -37,13 +37,13 @@ class LUTROMScaledTest(c: LUTROMScaledReduced) extends PeekPokeTester(c) {
   expect(c.io.req.ready,false.B)
   expect(c.io.resp.valid,true.B)
   expect(c.io.resp.bits.scaled_vmem, "h3fd47ae1".U(32.W))
-  expect(c.io.resp.bits.offset,"h3f15d197".U(32.W))
+  expect(c.io.resp.bits.offset,"h3f19e995".U(32.W))
   
   // // This is the correct slope
-  // expect(c.io.resp.bits.slope,"h3e1ebcf3".U(32.W))
+  // expect(c.io.resp.bits.slope,"h3e135a6b".U(32.W))
 
   // This is the correct slope * scaled + offset value
-  expect(c.io.resp.bits.slope,"h3f57b1ec".U(32.W))
+  expect(c.io.resp.bits.slope,"h3f571063".U(32.W))
 
  //  step(1)
  //  // Same v_mem and curve_select values
